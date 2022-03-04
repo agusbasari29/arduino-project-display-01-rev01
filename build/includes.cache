@@ -1,0 +1,87 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/cores/arduino"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/variants/standard"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "MD_DS3231.h",
+    "Includepath": "/home/jabrix/Arduino/libraries/MD_DS3231/src"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "Wire.h",
+    "Includepath": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/libraries/Wire/src"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "HUB08SPI.h",
+    "Includepath": "/home/jabrix/Arduino/libraries/Arduino_HUB08_Matrix_Led-main"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "SPI.h",
+    "Includepath": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/libraries/SPI/src"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "EEPROM.h",
+    "Includepath": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/libraries/EEPROM/src"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "TimerTwo.h",
+    "Includepath": "/home/jabrix/Arduino/libraries/TimerTwo-master"
+  },
+  {
+    "Sourcefile": "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/build/sketch/sketch.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Arduino/libraries/MD_DS3231/src/MD_DS3231.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/libraries/Wire/src/Wire.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/libraries/Wire/src/utility/twi.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Arduino/libraries/Arduino_HUB08_Matrix_Led-main/Buffer.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Arduino/libraries/Arduino_HUB08_Matrix_Led-main/HUB08SPI.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Arduino/libraries/Arduino_HUB08_Matrix_Led-main/TimerOne.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Downloads/arduino-1.8.19-linux64/arduino-1.8.19/hardware/arduino/avr/libraries/SPI/src/SPI.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/jabrix/Arduino/libraries/TimerTwo-master/TimerTwo.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
