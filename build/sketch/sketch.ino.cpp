@@ -21,7 +21,7 @@
 #include <TimerTwo.h>
 #include <Buffer.h>
 
-#define WIDTH 64
+#define WIDTH 192
 #define HEIGHT 16
 
 #define I2C_SLAVE1_ADDRESS 11
@@ -36,7 +36,7 @@
 
 HUB08SPI display;
 uint8_t displaybuf[WIDTH * HEIGHT / 8];
-Buffer buff(displaybuf, 64, 16);
+Buffer buff(displaybuf, 192, 16);
 const char shiftText[3][10] =
     {
         "SHIFT 1",
@@ -56,71 +56,66 @@ int lastButtonReset = 0;
 int safeButton = 0;
 int skipComm = 0;
 int state = 0;
-int target1, target2, target3;
+int stateTime = 0;
+int target[3] = {0, 0, 0};
 byte ha, hb, hc, ma, mb, mc = 0;
 char buffer[3][10];
 
 #include <ronnAnimation.h>
 
-#line 63 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 64 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void refresh();
-#line 68 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 69 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void setup();
-#line 97 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 98 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void loop();
-#line 102 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 103 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void backgroundTask();
-#line 107 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
-void transWire();
-#line 124 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
-void sendToOther(int x, int y);
-#line 134 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
-void shift();
-#line 143 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
-void time();
-#line 182 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 109 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+void displayNumber(int x, int y);
+#line 136 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+void getTextDisplay();
+#line 142 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void saveTarget(void);
-#line 193 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 153 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void saveShiftTime(void);
-#line 208 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 168 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void usage(void);
-#line 229 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 189 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void button();
-#line 263 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 223 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 char readNext();
-#line 288 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 337 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void console();
-#line 366 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 415 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void setEeprom(void);
-#line 398 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 447 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void getEeprom(void);
-#line 421 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 470 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 bool getEepromStatus(void);
-#line 446 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 495 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void addCounter(void);
-#line 453 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 502 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void resetCounter(void);
-#line 463 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 511 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void editCounter(void);
-#line 477 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 525 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void getCurrentShift();
-#line 545 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
-void getTargetShift(void);
-#line 575 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 598 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 const char * dow2String(uint8_t code);
-#line 584 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 607 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 uint8_t htoi(char c);
-#line 596 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 619 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 uint8_t i2dig(uint8_t mode);
-#line 618 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 641 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 char * p2dig(uint8_t v, uint8_t mode);
-#line 645 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 668 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void showTime();
-#line 652 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 675 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void printTime();
-#line 665 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 688 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void inputTime(void);
-#line 63 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
+#line 64 "/home/jabrix/projects/Arduino/Projects/Project 01 rev (Display Counter Prod)/arduino-project-display-01-rev01/sketch.ino"
 void refresh()
 {
     display.scan();
@@ -148,9 +143,9 @@ void setup()
     Timer2.init(800u, backgroundTask);
     Timer2.start();
     getCurrentShift();
-    display.setBrightness(200);         // low brightness to save energy
-    buff.clear();                       // clear display led matrix
-    buff.bitmap(0, 0, 64, 16, logo, 1); // bitmap logo
+    display.setBrightness(200); // low brightness to save energy
+    buff.clear();               // clear display led matrix
+    // buff.bitmap(128, 0, 64, 16, logo, 1); // bitmap logo
     delay(2000);
     ronn.clear_A1();
 }
@@ -165,79 +160,38 @@ void backgroundTask()
     button();
 }
 
-void transWire()
+// 1 2 3 4 5
+void displayNumber(int x, int y)
 {
-
-    switch (currentShift)
-    {
-    case 0:
-        sendToOther(target1, counter);
-        break;
-    case 1:
-        sendToOther(target2, counter);
-        break;
-    case 2:
-        sendToOther(target3, counter);
-        break;
-    }
-}
-
-void sendToOther(int x, int y)
-{
-    Wire.beginTransmission(I2C_SLAVE1_ADDRESS);
-    Wire.write(x);
-    Wire.endTransmission();
-    Wire.beginTransmission(I2C_SLAVE2_ADDRESS);
-    Wire.write(y);
-    Wire.endTransmission();
-}
-
-void shift()
-{
-    ronn.setFont(B_STD);
-    ronn.scanText_R(shiftText[currentShift], 1, 1);
-    delay(5000);
-    ronn.clear_D();
-    // delay(500);
-}
-
-void time()
-{
+    char c[8];
+    itoa(x, c, 10);
     ronn.setFont(B_7SEGMENT);
-    char clock[8];
-    uint8_t h = RTC.h;
-    uint8_t m = RTC.m;
-    RTC.readTime();
-    strcpy(&clock[0], p2dig(RTC.h, DEC));
-    strcpy(&clock[2], ":");
-    strcpy(&clock[3], p2dig(RTC.m, DEC));
-    ronn.scrollText_D(clock, 9, 0, 64 - 11);
-    for (int i = 1; i <= 5; i++)
+    if (x <= 9)
     {
-        delay(400);
-        buff.fillRect(31, 0, 2, 12, 0);
-        delay(600);
-        ronn.printText(":", 31, 0);
-        RTC.readTime();
-        if (RTC.m != m)
-        {
-            char newM[3];
-            m = RTC.m;
-            strcpy(newM, p2dig(RTC.m, DEC));
-            strcpy(&clock[3], p2dig(RTC.m, DEC));
-            ronn.scrollText_D(newM, 45 - 11, 0, 21);
-        }
-        else if (RTC.h != h)
-        {
-            char newH[3];
-            h = RTC.h;
-            strcpy(newH, p2dig(RTC.m, DEC));
-            strcpy(&clock[0], p2dig(RTC.m, DEC));
-            ronn.scrollText_D(newH, 9, 0, 21);
-        }
+        ronn.printText(c, y + 64 - 15, 0);
     }
-    delay(500);
-    ronn.clear_R();
+    else if (x <= 99)
+    {
+        ronn.printText(c, y + 64 - 26, 0);
+    }
+    else if (x <= 999)
+    {
+        ronn.printText(c, y + 64 - 37, 0);
+    }
+    else if (x <= 9999)
+    {
+        ronn.printText(c, y + 64 - 48, 0);
+    }
+    else
+    {
+        ronn.printText(c, y + 64 - 59, 0);
+    }
+}
+
+void getTextDisplay()
+{
+    displayNumber(target[currentShift], 64);
+    displayNumber(counter, 0);
 }
 
 void saveTarget(void)
@@ -289,7 +243,7 @@ void usage(void)
  */
 void button()
 {
-    if (safeButton == 2)
+    if (safeButton == 10)
     {
         buttonState = digitalRead(8);
         resetButton = digitalRead(12);
@@ -328,18 +282,107 @@ char readNext()
     {
         while (!Serial.available())
         {
+            char clock[8];
             if (state == 0)
             {
-                shift();
-                state = 1;
+                ronn.setFont(B_STD);
+                ronn.scanText_R(shiftText[currentShift], 1 + 128, 1);
+                delay(500);
+                state++;
             }
-            else
+            else if (state > 0 && state < 7)
             {
-                time();
+                delay(500);
+                state++;
+            }
+            else if (state == 7)
+            {
+                ronn.clear_D(65 + 64, 0, 64, 16);
+                state++;
+                delay(500);
+            }
+            else if (state == 8)
+            {
+                RTC.readTime();
+                ronn.setFont(B_7SEGMENT);
+                strcpy(&clock[0], p2dig(RTC.h, DEC));
+                strcpy(&clock[2], ":");
+                strcpy(&clock[3], p2dig(RTC.m, DEC));
+                ronn.scrollText_D(clock, 9 + 128, 0, 64 - 11);
+                delay(500);
+                state++;
+            }
+            else if (state > 8 && state < 20)
+            {
+                RTC.readTime();
+                ronn.setFont(B_7SEGMENT);
+                String s;
+                s = p2dig(RTC.h, DEC);
+                s += ":";
+                s += p2dig(RTC.m, DEC);
+                ronn.printText(s, 9 + 128, 0);
+                // delay(3);
+                if (stateTime == 0)
+                {
+                    buff.fillRect(31 + 128, 0, 2, 12, 0);
+                    delay(500);
+                    RTC.readTime();
+                    uint8_t h = RTC.h;
+                    uint8_t m = RTC.m;
+                    if (RTC.m != m)
+                    {
+                        char newM[3];
+                        m = RTC.m;
+                        strcpy(newM, p2dig(RTC.m, DEC));
+                        strcpy(&clock[3], p2dig(RTC.m, DEC));
+                        ronn.scrollText_D(newM, 45 - 11 + 128, 0, 21);
+                    }
+                    else if (RTC.h != h)
+                    {
+                        char newH[3];
+                        h = RTC.h;
+                        strcpy(newH, p2dig(RTC.m, DEC));
+                        strcpy(&clock[0], p2dig(RTC.m, DEC));
+                        ronn.scrollText_D(newH, 9 + 128, 0, 21);
+                    }
+                    stateTime = 1;
+                }
+                else
+                {
+                    ronn.printText(":", 31 + 128, 0);
+                    delay(500);
+                    RTC.readTime();
+                    uint8_t h = RTC.h;
+                    uint8_t m = RTC.m;
+                    if (RTC.m != m)
+                    {
+                        char newM[3];
+                        m = RTC.m;
+                        strcpy(newM, p2dig(RTC.m, DEC));
+                        strcpy(&clock[3], p2dig(RTC.m, DEC));
+                        ronn.scrollText_D(newM, 45 - 11 + 128, 0, 21);
+                    }
+                    else if (RTC.h != h)
+                    {
+                        char newH[3];
+                        h = RTC.h;
+                        strcpy(newH, p2dig(RTC.m, DEC));
+                        strcpy(&clock[0], p2dig(RTC.m, DEC));
+                        ronn.scrollText_D(newH, 9 + 128, 0, 21);
+                    }
+                    stateTime = 0;
+                }
+                state++;
+            }
+            else if (state == 20)
+            {
+                ronn.clear_R(65 + 64, 0, 64, 16);
+                delay(500);
                 state = 0;
             }
+            getTextDisplay();
             getCurrentShift();
-            transWire();
+            ;
         }
         c = Serial.read();
     } while (isspace(c));
@@ -426,14 +469,14 @@ void console()
  */
 void setEeprom(void)
 {
-    target1 = 700;
-    EEPROM.put(eeadrTarget[0], target1);
+    target[0] = 700;
+    EEPROM.put(eeadrTarget[0], target[0]);
     delay(10);
-    target2 = 600;
-    EEPROM.put(eeadrTarget[1], target2);
+    target[1] = 600;
+    EEPROM.put(eeadrTarget[1], target[1]);
     delay(10);
-    target3 = 500;
-    EEPROM.put(eeadrTarget[2], target3);
+    target[2] = 500;
+    EEPROM.put(eeadrTarget[2], target[2]);
     delay(10);
     ha = 7;
     EEPROM.put(eeadrShiftTime[0], ha);
@@ -458,9 +501,9 @@ void setEeprom(void)
 
 void getEeprom(void)
 {
-    EEPROM.get(eeadrTarget[0], target1);
-    EEPROM.get(eeadrTarget[1], target2);
-    EEPROM.get(eeadrTarget[2], target3);
+    EEPROM.get(eeadrTarget[0], target[0]);
+    EEPROM.get(eeadrTarget[1], target[1]);
+    EEPROM.get(eeadrTarget[2], target[2]);
     EEPROM.get(eeadrShiftTime[0], ha);
     EEPROM.get(eeadrShiftTime[1], ma);
     EEPROM.get(eeadrShiftTime[2], hb);
@@ -468,9 +511,9 @@ void getEeprom(void)
     EEPROM.get(eeadrShiftTime[4], hc);
     EEPROM.get(eeadrShiftTime[5], mc);
     PRINTS("\nSuccessfully get data from EEPROM");
-    PRINT("\nTarget Shift 1 : ", target1);
-    PRINT("\nTarget Shift 2 : ", target2);
-    PRINT("\nTarget Shift 3 : ", target3);
+    PRINT("\nTarget Shift 1 : ", target[0]);
+    PRINT("\nTarget Shift 2 : ", target[1]);
+    PRINT("\nTarget Shift 3 : ", target[2]);
     PRINT("\nTime Shift 1 hour : ", ha);
     PRINT("\nTime Shift 1 minute : ", ma);
     PRINT("\nTime Shift 2 hour : ", hb);
@@ -515,8 +558,7 @@ void resetCounter(void)
 {
     counter = 0;
     itoa(counter, buffer[2], 10);
-    // P.setTextBuffer(2, buffer[2]);
-    // P.displayReset(2);
+    ronn.clear_D(0, 0, 64, 16);
     PRINTS("\nReset Counter to 0.");
     PRINTS("\n");
 }
@@ -601,31 +643,6 @@ void getCurrentShift()
         }
     }
     // PRINT("\nCurrent Shift : ", currentShift);
-}
-
-void getTargetShift(void)
-{
-    char target[8];
-
-    switch (currentShift)
-    {
-    case 0:
-        itoa(target1, target, 10);
-        // PRINTS("\nGet target shift 0");
-        break;
-    case 1:
-        itoa(target2, target, 10);
-        // PRINTS("\nGet target shift 1");
-        break;
-    case 2:
-        itoa(target3, target, 10);
-        // PRINTS("\nGet target shift 2");
-        break;
-    default:
-        break;
-    }
-    // PRINT("\nCurrent Target : ", target);
-    strcpy(buffer[1], target);
 }
 
 /**
@@ -735,4 +752,3 @@ void inputTime(void)
 
     RTC.dow = i2dig(DEC);
 }
-
